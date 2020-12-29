@@ -1,5 +1,5 @@
-import skimage.segmentation as seg
 import cv2
+import skimage.segmentation as seg
 
 
 def active_contour(img, mask, iteration):

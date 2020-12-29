@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
-from scipy.ndimage import binary_fill_holes
+from sklearn.svm import LinearSVC
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.svm import LinearSVC
-
+from scipy.ndimage import binary_fill_holes
 from active_contour import active_contour
 
 
@@ -13,9 +12,9 @@ def refine_trimap(img, trimap, f_threshold=.9, b_threshold=.9, erode_size=2):
     :param erode_size: The kernel size of the last erode operation.
     :param b_threshold: background confidence threshold of SVM classifier. value greater than 0, default=.9
     :param f_threshold: foreground confidence threshold of SVM classifier. value greater than 0, default=.9
-    :param img:    input image,    type=ndarray, dtype=uint8, region=[0,255], shape=(h,w,c), color_type=BGR
-    :param trimap: initial trimap, type=ndarray, dtype=uint8, region=[0,255], shape=(h,w),   color_type=GRAY
-    :return:       refined trimap, type=ndarray, dtype=uint8, region=[0,255], shape=(h,w),   color_type=GRAY
+    :param img:    input image,    type=ndarray, dtype=uint8, region=[0, 255], shape=(h, w, c), color_type=BGR
+    :param trimap: initial trimap, type=ndarray, dtype=uint8, region=[0, 255], shape=(h, w),    color_type=GRAY
+    :return:       refined trimap, type=ndarray, dtype=uint8, region=[0, 255], shape=(h, w),    color_type=GRAY
     """
     # get the initial trimap regions.
     f_mask = trimap > 245
@@ -34,7 +33,7 @@ def refine_trimap(img, trimap, f_threshold=.9, b_threshold=.9, erode_size=2):
 
     # coordinate features.
     h, w, _ = img_bgr.shape
-    [img_x, img_y] = np.meshgrid(range(w), range(h))
+    img_x, img_y = np.meshgrid(range(w), range(h))
 
     img_fea = np.concatenate([
         img_x[..., np.newaxis],
