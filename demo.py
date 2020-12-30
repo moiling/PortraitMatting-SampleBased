@@ -1,5 +1,7 @@
 import os
 import cv2
+import numpy as np
+
 from tqdm import tqdm
 from matting import matting
 from compositing import compositing
@@ -30,9 +32,11 @@ if __name__ == '__main__':
         trimap_refined = refine_trimap(img_resized, trimap, f_threshold, b_threshold, u_min_width)
 
         # matting
-        alpha_pref, fg_pref = matting(img_resized, trimap_refined)
+        alpha_pred, fg_pred = matting(img_resized, trimap_refined)
 
+        # guided filter (opencv contrib needed).
+        alpha_pred = cv2.ximgproc.guidedFilter(img_resized, alpha_pred.astype(np.float32), radius=5, eps=5)
         # compositing
-        comp = compositing(img_resized, fg_pref, bg_color, alpha_pref)
+        comp = compositing(img_resized, fg_pred, bg_color, alpha_pred)
 
         cv2.imwrite(os.path.join(out_dir, name), comp)
